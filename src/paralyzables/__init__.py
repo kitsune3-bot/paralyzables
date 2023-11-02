@@ -1,13 +1,29 @@
 import re
 from itertools import product
+from typing import overload
 
 from paralyzables.config import NON_NORMAL_ASCII_CHARS
 from paralyzables.parse import parse_new_mapping_file
 
 
 class Paralyzables:
+    @overload
     def __init__(self, confusables_file: str, case_invariant: bool = False):
-        self._confusables_map = parse_new_mapping_file(confusables_file, case_invariant)
+        ...
+
+    @overload
+    def __init__(self, confusables_file: str):
+        ...
+
+    def __init__(
+        self, confusables_file: str | dict[str, list[str]], case_invariant: bool = False
+    ):
+        if isinstance(confusables_file, str):
+            self._confusables_map = parse_new_mapping_file(
+                confusables_file, case_invariant
+            )
+        elif isinstance(confusables_file, dict):
+            self._confusables_map = confusables_file
 
     def is_confusables(self, str1: str, str2: str) -> bool:
         while str1 and str2:
@@ -91,3 +107,14 @@ class Paralyzables:
                 ]
             )
         return sorted(list(normal_forms))
+
+    @property
+    def confusables_map(self) -> dict[str, list[str]]:
+        return self._confusables_map
+
+    @confusables_map.setter
+    def confusables_map(self, x: dict[str, list[str]]):
+        if not isinstance(x, dict):
+            raise TypeError
+
+        self._confusables_map = x
