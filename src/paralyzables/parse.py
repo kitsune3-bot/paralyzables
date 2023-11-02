@@ -15,17 +15,15 @@ def _get_accented_characters(char: str) -> list[str]:
 
 
 def _get_paralyzables_chars(
-    character: str, unicode_paralyzables_map: dict[str, list[str]], depth: int
+    character: str, unicode_confusable_map: dict[str, list[str]], depth: int
 ) -> set[str]:
-    mapped_chars = unicode_paralyzables_map[character]
+    mapped_chars = unicode_confusable_map[character]
 
     group = set([character])
     if depth <= MAX_SIMILARITY_DEPTH:
         for mapped_char in mapped_chars:
             group.update(
-                _get_paralyzables_chars(
-                    mapped_char, unicode_paralyzables_map, depth + 1
-                )
+                _get_paralyzables_chars(mapped_char, unicode_confusable_map, depth + 1)
             )
     return group
 
@@ -33,7 +31,7 @@ def _get_paralyzables_chars(
 def parse_new_mapping_file(
     confusables_file: str, case_invariant: bool = False
 ) -> dict[str, list[str]]:
-    unicode_paralyzables_map = {}
+    unicode_confusable_map = {}
 
     with open(confusables_file, "r") as unicode_mappings:
         mappings = unicode_mappings.readlines()
@@ -52,60 +50,58 @@ def parse_new_mapping_file(
             mapping[1] = [chr(int(x, 16)) for x in mapping[1]]
             str2 = "".join(mapping[1])
 
-            if unicode_paralyzables_map.get(str1):
-                unicode_paralyzables_map[str1].add(str2)
+            if unicode_confusable_map.get(str1):
+                unicode_confusable_map[str1].add(str2)
             else:
-                unicode_paralyzables_map[str1] = set([str2])
+                unicode_confusable_map[str1] = set([str2])
 
-            if unicode_paralyzables_map.get(str2):
-                unicode_paralyzables_map[str2].add(str1)
+            if unicode_confusable_map.get(str2):
+                unicode_confusable_map[str2].add(str1)
             else:
-                unicode_paralyzables_map[str2] = set([str1])
+                unicode_confusable_map[str2] = set([str1])
 
             if case_invariant is True:
                 # NOTE: src upper or lower char
                 if len(str1) == 1:
-                    case_change = str1.lower() if str1.isupper() else str1.upper()
-                    if case_change != str1:
-                        unicode_paralyzables_map[str1].add(case_change)
-                        if unicode_paralyzables_map.get(case_change) is not None:
-                            unicode_paralyzables_map[case_change].add(str1)
-                        else:
-                            unicode_paralyzables_map[case_change] = set([str1])
+                    case_change = str2.swapcase()
+                    unicode_confusable_map[str2].add(case_change)
+                    if unicode_confusable_map.get(case_change) is not None:
+                        unicode_confusable_map[case_change].add(str2)
+                    else:
+                        unicode_confusable_map[case_change] = {str2}
 
                 # NOTE: tgt upper or lower char
                 if len(str2) == 1:
-                    case_change = str2.lower() if str2.isupper() else str2.upper()
-                    if case_change != str2:
-                        unicode_paralyzables_map[str2].add(case_change)
-                        if unicode_paralyzables_map.get(case_change) is not None:
-                            unicode_paralyzables_map[case_change].add(str2)
-                        else:
-                            unicode_paralyzables_map[case_change] = set([str2])
+                    case_change = str2.swapcase()
+                    unicode_confusable_map[str2].add(case_change)
+                    if unicode_confusable_map.get(case_change) is not None:
+                        unicode_confusable_map[case_change].add(str2)
+                    else:
+                        unicode_confusable_map[case_change] = {str2}
 
     # NOTE: correspond accents
     for char in string.ascii_lowercase:
         accented = _get_accented_characters(char)
-        unicode_paralyzables_map[char].update(accented)
+        unicode_confusable_map[char].update(accented)
         for accent in accented:
-            if unicode_paralyzables_map.get(accent):
-                unicode_paralyzables_map[accent].add(char)
+            if unicode_confusable_map.get(accent):
+                unicode_confusable_map[accent].add(char)
             else:
-                unicode_paralyzables_map[accent] = set([char])
+                unicode_confusable_map[accent] = set([char])
 
     for char in string.ascii_uppercase:
         accented = _get_accented_characters(char)
-        unicode_paralyzables_map[char].update(accented)
+        unicode_confusable_map[char].update(accented)
         for accent in accented:
-            if unicode_paralyzables_map.get(accent):
-                unicode_paralyzables_map[accent].add(char)
+            if unicode_confusable_map.get(accent):
+                unicode_confusable_map[accent].add(char)
             else:
-                unicode_paralyzables_map[accent] = set([char])
+                unicode_confusable_map[accent] = set([char])
 
     paralyzables_map = dict()
 
-    for character in list(unicode_paralyzables_map.keys()):
-        char_group = _get_paralyzables_chars(character, unicode_paralyzables_map, 0)
+    for character in unicode_confusable_map.keys():
+        char_group = _get_paralyzables_chars(character, unicode_confusable_map, 0)
 
         paralyzables_map[character] = list(char_group)
 
