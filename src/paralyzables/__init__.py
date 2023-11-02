@@ -7,10 +7,10 @@ from paralyzables.utils import is_ascii
 
 
 class Paralyzables:
-    def __init__(self, confusables_file, case_invariant=False):
+    def __init__(self, confusables_file: str, case_invariant: bool = False):
         self._confusables_map = parse_new_mapping_file(confusables_file, case_invariant)
 
-    def is_confusables(self, str1, str2):
+    def is_confusables(self, str1: str, str2: str) -> bool:
         while str1 and str2:
             length1, length2 = 0, 0
             for index in range(len(str1), 0, -1):
@@ -32,7 +32,7 @@ class Paralyzables:
                 str2 = str2[length2:]
         return str1 == str2
 
-    def confusables_characters(self, char) -> list[str]:
+    def confusables_characters(self, char: str) -> list[str]:
         mapped_chars = self._confusables_map.get(char)
         if mapped_chars:
             return mapped_chars
@@ -40,7 +40,9 @@ class Paralyzables:
             return [char]
         return []
 
-    def confusables_regex(self, string, include_character_padding=False):
+    def confusables_regex(
+        self, string: str, include_character_padding: bool = False
+    ) -> str:
         space_regex = "[\*_~|`\-\.]*" if include_character_padding else ""
         regex = space_regex
         for char in string:
@@ -49,7 +51,7 @@ class Paralyzables:
 
         return regex
 
-    def normalize(self, string, prioritize_alpha=False):
+    def normalize(self, string: str, prioritize_alpha: bool = False) -> list[str]:
         normal_forms = set([""])
         for char in string:
             normalized_chars = []

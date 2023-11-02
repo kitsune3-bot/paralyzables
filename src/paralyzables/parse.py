@@ -14,8 +14,9 @@ def _get_accented_characters(char: str) -> list[str]:
     ]
 
 
-# TODO
-def _get_paralyzables_chars(character, unicode_paralyzables_map, depth):
+def _get_paralyzables_chars(
+    character: str, unicode_paralyzables_map: dict[str, list[str]], depth: int
+) -> set[str]:
     mapped_chars = unicode_paralyzables_map[character]
 
     group = set([character])
@@ -30,11 +31,11 @@ def _get_paralyzables_chars(character, unicode_paralyzables_map, depth):
 
 
 def parse_new_mapping_file(
-    paralyzables_file, case_invariant=False
+    confusables_file: str, case_invariant: bool = False
 ) -> dict[str, list[str]]:
     unicode_paralyzables_map = {}
 
-    with open(paralyzables_file, "r") as unicode_mappings:
+    with open(confusables_file, "r") as unicode_mappings:
         mappings = unicode_mappings.readlines()
 
         for mapping_line in mappings:
