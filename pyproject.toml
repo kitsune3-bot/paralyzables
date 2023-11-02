@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "paralyzables"
+version = "0.1.0"
+description = ""
+authors = ["gewalt01 <gewalt01@github.com>"]
+packages = [{include = "paralyzables", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
