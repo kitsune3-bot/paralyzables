@@ -56,16 +56,16 @@ class Paralyzables:
         for char in string:
             normalized_chars = []
             confusables_chars = self.confusables_characters(char)
-            if not is_ascii(char) or not char.isalpha():
+            if not (char.isascii() and char.isalnum()):
                 for confusables in confusables_chars:
                     if prioritize_alpha:
                         if (
                             (
                                 char.isalpha()
                                 and confusables.isalpha()
-                                and is_ascii(confusables)
+                                and confusables.isascii()
                             )
-                            or (not char.isalpha() and is_ascii(confusables))
+                            or (not char.isalpha() and confusables.isascii())
                         ) and confusables not in NON_NORMAL_ASCII_CHARS:
                             normal = confusables
                             if len(confusables) > 1:
@@ -73,7 +73,7 @@ class Paralyzables:
                             normalized_chars.append(normal)
                     else:
                         if (
-                            is_ascii(confusables)
+                            confusables.isascii()
                             and confusables not in NON_NORMAL_ASCII_CHARS
                         ):
                             normal = confusables
