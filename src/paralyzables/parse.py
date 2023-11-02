@@ -46,9 +46,9 @@ def parse_new_mapping_file(
 
             mapping = mapping_line.split(";")[:2]
             str1 = chr(int(mapping[0].strip(), 16))
-            mapping[1] = mapping[1].strip().split(" ")
-            mapping[1] = [chr(int(x, 16)) for x in mapping[1]]
-            str2 = "".join(mapping[1])
+            str2_code_points = mapping[1].strip().split(" ")
+            str2_code_points = [chr(int(x, 16)) for x in str2_code_points]
+            str2 = "".join(str2_code_points)
 
             if unicode_confusable_map.get(str1):
                 unicode_confusable_map[str1].add(str2)
