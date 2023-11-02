@@ -60,36 +60,19 @@ def parse_new_mapping_file(
             else:
                 unicode_confusable_map[str2] = set([str1])
 
-            if case_invariant is True:
-                # NOTE: src upper or lower char
-                if len(str1) == 1:
-                    case_change = str2.swapcase()
-                    unicode_confusable_map[str2].add(case_change)
+            for st in [str1, str2]:
+                if case_invariant is True:
+                    break
+
+                if len(st) == 1:
+                    case_change = st.swapcase()
+                    unicode_confusable_map[st].add(case_change)
                     if unicode_confusable_map.get(case_change) is not None:
-                        unicode_confusable_map[case_change].add(str2)
+                        unicode_confusable_map[case_change].add(st)
                     else:
-                        unicode_confusable_map[case_change] = {str2}
+                        unicode_confusable_map[case_change] = {st}
 
-                # NOTE: tgt upper or lower char
-                if len(str2) == 1:
-                    case_change = str2.swapcase()
-                    unicode_confusable_map[str2].add(case_change)
-                    if unicode_confusable_map.get(case_change) is not None:
-                        unicode_confusable_map[case_change].add(str2)
-                    else:
-                        unicode_confusable_map[case_change] = {str2}
-
-    # NOTE: correspond accents
-    for char in string.ascii_lowercase:
-        accented = _get_accented_characters(char)
-        unicode_confusable_map[char].update(accented)
-        for accent in accented:
-            if unicode_confusable_map.get(accent):
-                unicode_confusable_map[accent].add(char)
-            else:
-                unicode_confusable_map[accent] = set([char])
-
-    for char in string.ascii_uppercase:
+    for char in string.ascii_lowercase + string.ascii_uppercase:
         accented = _get_accented_characters(char)
         unicode_confusable_map[char].update(accented)
         for accent in accented:
