@@ -3,7 +3,6 @@ from itertools import product
 
 from paralyzables.config import NON_NORMAL_ASCII_CHARS
 from paralyzables.parse import parse_new_mapping_file
-from paralyzables.utils import is_ascii
 
 
 class Paralyzables:
