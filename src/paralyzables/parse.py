@@ -60,17 +60,15 @@ def parse_new_mapping_file(
             else:
                 unicode_confusable_map[str2] = set([str1])
 
-            for st in [str1, str2]:
-                if case_invariant is True:
-                    break
-
-                if len(st) == 1:
-                    case_change = st.swapcase()
-                    unicode_confusable_map[st].add(case_change)
-                    if unicode_confusable_map.get(case_change) is not None:
-                        unicode_confusable_map[case_change].add(st)
-                    else:
-                        unicode_confusable_map[case_change] = {st}
+            if case_invariant is True:
+                for st in [str1, str2]:
+                    if len(st) == 1:
+                        case_change = st.swapcase()
+                        unicode_confusable_map[st].add(case_change)
+                        if unicode_confusable_map.get(case_change) is not None:
+                            unicode_confusable_map[case_change].add(st)
+                        else:
+                            unicode_confusable_map[case_change] = {st}
 
     for char in string.ascii_lowercase + string.ascii_uppercase:
         accented = _get_accented_characters(char)

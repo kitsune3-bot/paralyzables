@@ -8,7 +8,7 @@ repository = "https://github.com/kitsune3-bot/paralyzables"
 packages = [{include = "paralyzables", from = "src"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8.1"
+python = ">=3.8.1,<4"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -30,6 +30,13 @@ types-toml = "^0.10.8.7"
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.5.3"
 mkdocstrings = "^0.23.0"
+mkdocs-material = "^9.4.7"
+mkdocs-coverage = "^1.0.0"
+mkdocs-git-committers-plugin-2 = "^2.0.1"
+mkdocs-literate-nav = "^0.6.1"
+mkdocs-gen-files = "^0.5.0"
+mkdocs-minify-plugin = "^0.7.1"
+pymdown-extensions = "^10.3.1"
 
 
 [tool.poetry.group.tests.dependencies]

@@ -1,0 +1,41 @@
+site_name: "paralyzables"
+site_description: ""
+site_url: ""
+repo_url: "https://github.com/kitsune3-bot/paralyzables"
+repo_name: "kitsune3-bot/paralyzables"
+site_dir: "site"
+watch: [mkdocs.yml,  CONTRIBUTING.md, src/paralyzables]
+#watch: [mkdocs.yml, README.md, CONTRIBUTING.md, CHANGELOG.md, src/paralyzables]
+copyright: Copyright &copy; 2023 kitsune3-bot
+
+nav:
+- Home:
+  - Overview: index.md
+- Others:
+  - License: LISENCE.md
+  - Changelog: CHANGELOG.md
+  - Credits: credits.md
+  - Contributing: CONTRIBUTING.md
+
+theme:
+  name: 'material'
+  language: 'ja'
+extra:
+  search:
+    language: 'jp'
+
+plugins:
+- search
+- coverage
+- minify:
+    minify_html: !ENV [DEPLOY, false]
+- git-committers:
+    enabled: !ENV [DEPLOY, false]
+    repository: kitsune3-bot/paralyzables
+- gen-files:
+    scripts:
+    - docs/gen_ref_nav.py
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [src]
